@@ -1526,6 +1526,7 @@ def getVideoExtension(pathFileWithoutExtension):
     for file in os.listdir(pathVideoDir):
         if videoName == file.rsplit('.', 1)[0]:
             extension = '.' + file.rsplit('.', 1)[1]
+            print(extension)
             
     return extension
 

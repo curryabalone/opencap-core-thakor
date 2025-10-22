@@ -639,6 +639,7 @@ def calcExtrinsicsFromVideo(videoPath, CamParams, CheckerBoardParams,
 def isCheckerboardUpsideDown(CameraParams):
     # With backwall orientation, R[1,1] will always be positive in correct orientation
     # and negative if upside down
+    print(CameraParams)
     for cam in list(CameraParams.keys()):
         if CameraParams[cam] is not None:
             upsideDown = CameraParams[cam]['rotation'][1,1] < 0

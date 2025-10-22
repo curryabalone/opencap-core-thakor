@@ -37,14 +37,14 @@ def main(sessionName, trialName, trial_id, cameras_to_use=['all'],
          extrinsicsTrial=False, alternateExtrinsics=None, 
          calibrationOptions=None,
          markerDataFolderNameSuffix=None, imageUpsampleFactor=4,
-         poseDetector='OpenPose', resolutionPoseDetection='default', 
+         poseDetector='OpenPose', resolutionPoseDetection='1x736', 
          scaleModel=False, bbox_thr=0.8, augmenter_model='v0.3',
          genericFolderNames=False, offset=True, benchmark=False,
          dataDir=None, overwriteAugmenterModel=False,
          filter_frequency='default', overwriteFilterFrequency=False,
          scaling_setup='upright_standing_pose', overwriteScalingSetup=False,
          overwriteCamerasToUse=False, syncVer=None,):
-
+    
     # %% High-level settings.
     # Camera calibration.
     runCameraCalibration = True
@@ -198,10 +198,11 @@ def main(sessionName, trialName, trial_id, cameras_to_use=['all'],
                 sessionMetadata['checkerBoard']['black2BlackCornersWidth_n'],
                 sessionMetadata['checkerBoard']['black2BlackCornersHeight_n']),
             'squareSize': 
-                sessionMetadata['checkerBoard']['squareSideLength_mm']}       
+                sessionMetadata['checkerBoard']['squareSideLength_mm']}   
         # Camera directories and models.
         cameraDirectories = {}
         cameraModels = {}
+        print(sessionDir)
         for pathCam in glob.glob(os.path.join(sessionDir, 'Videos', 'Cam*')):
             if os.name == 'nt': # windows
                 camName = pathCam.split('\\')[-1]
@@ -266,6 +267,7 @@ def main(sessionName, trialName, trial_id, cameras_to_use=['all'],
                 
                 # for 720p, imageUpsampleFactor=4 is best for small board
                 try:
+                    print(CheckerBoardParams)
                     CamParams = calcExtrinsicsFromVideo(
                         extrinsicPath,CamParams, CheckerBoardParams, 
                         visualize=False, imageUpsampleFactor=imageUpsampleFactor,
@@ -294,7 +296,6 @@ def main(sessionName, trialName, trial_id, cameras_to_use=['all'],
                     CamParamDict[camName])
             
     # %% 3D reconstruction
-    
     # Set output file name.
     pathOutputFiles = {}
     if benchmark:
@@ -329,6 +330,7 @@ def main(sessionName, trialName, trial_id, cameras_to_use=['all'],
         for camName in cameraDirectories:
             camDir = cameraDirectories[camName]
             pathVideoWithoutExtension = os.path.join(camDir, 'InputMedia', trialName, trial_id)
+            print(pathVideoWithoutExtension)
             if len(glob.glob(pathVideoWithoutExtension + '*')) == 0:
                 print(f"Camera {camName} does not have a video for trial {trial_id}")
             else:
@@ -389,6 +391,7 @@ def main(sessionName, trialName, trial_id, cameras_to_use=['all'],
       
     if runSynchronization:
         # Synchronize videos.
+        print("synced")
         try:
             keypoints2D, confidence, keypointNames, frameRate, nansInOut, startEndFrames, cameras2Use = (
                 synchronizeVideos( 
@@ -618,3 +621,4 @@ def main(sessionName, trialName, trial_id, cameras_to_use=['all'],
             settings['verticalOffset'] = vertical_offset_settings 
         with open(pathSettings, 'w') as file:
             yaml.dump(settings, file)
+
